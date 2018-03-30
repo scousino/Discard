@@ -15,6 +15,9 @@ public interface ChatroomDao {
     @Query("SELECT * FROM tblChatroom")
     public Chatroom[] getAllChatrooms();
 
+    @Query("SELECT * FROM tblChatroom WHERE cr_id = :chatroomID")
+    public Chatroom getChatroomById(String chatroomID);
+
     @Insert
     public void addChatroom(Chatroom newChatroom);
 

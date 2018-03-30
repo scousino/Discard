@@ -22,5 +22,8 @@ public class Message {
     //Foreign key that ties a message to a specific Chatroom
     public String cr_id;
 
-    public String message_text = "";
+    public String message = "";
+
+    public String posted_date;
+    public String posted_time;
 }
