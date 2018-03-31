@@ -20,6 +20,7 @@ import edu.pitt.cs1699.discard.databinding.ChatroomListItemBinding;
 
 import java.util.List;
 
+import static edu.pitt.cs1699.discard.Enums.CHATROOM_ID;
 import static edu.pitt.cs1699.discard.Enums.CHATROOM_NAME;
 
 public class ChatroomAdapter extends RecyclerView.Adapter<ChatroomAdapter.SimpleViewHolder> {
@@ -62,7 +63,9 @@ public class ChatroomAdapter extends RecyclerView.Adapter<ChatroomAdapter.Simple
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ChatroomActivity.class);
                 String roomName = chatroom.name;
+                String roomID = chatroom.cr_id;
                 intent.putExtra(CHATROOM_NAME, roomName);
+                intent.putExtra(CHATROOM_ID, roomID);
                 mContext.startActivity(intent);
             }
         };

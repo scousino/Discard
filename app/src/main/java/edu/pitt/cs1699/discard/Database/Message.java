@@ -16,6 +16,14 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                                                             childColumns = "cr_id",
                                                             onDelete = CASCADE))
 public class Message {
+
+    public Message(String cr_id, String message, String posted_date, String posted_time){
+        this.cr_id = cr_id;
+        this.message = message;
+        this.posted_date = posted_date;
+        this.posted_time = posted_time;
+    }
+
     @PrimaryKey(autoGenerate = true)
     public int msg_id;
 

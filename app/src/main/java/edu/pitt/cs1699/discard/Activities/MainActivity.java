@@ -66,19 +66,16 @@ public class MainActivity extends AppCompatActivity {
     }
     private void getRooms(float latitude, float longitude){
         ChatroomDao chatDao = mDb.getChatroomDao();
-        
+
         //TODO
         //List<Chatroom> nearbyRooms = chatDao.getChatroomsByLocation(latitude, longitude, _PROXIMITY);
 
+        //TEST ONLY
         List<Chatroom> nearbyRooms = Utilities.getPeopleList(this);
+
+
         mAdapter = new ChatroomAdapter(nearbyRooms, this);
         mBinding.recyclerView.setAdapter(mAdapter);
     }
-
-    public static void goToChatroom(Context mContext) {
-        Intent login = new Intent(mContext, ChatroomActivity.class);
-        mContext.startActivity(login);
-    }
-
 
 }

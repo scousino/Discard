@@ -9,9 +9,10 @@ import android.content.Context;
  * Created by Spencer Cousino on 3/30/2018.
  */
 
-@Database(entities = {Chatroom.class}, version = 1)
+@Database(entities = {Chatroom.class, Message.class}, version = 1)
 public abstract class DiscardDatabase extends RoomDatabase {
     public abstract ChatroomDao getChatroomDao();
+    public abstract MessageDao getMessageDao();
 
     private static DiscardDatabase INSTANCE;
 
