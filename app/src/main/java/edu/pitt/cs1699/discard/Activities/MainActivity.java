@@ -1,35 +1,84 @@
 package edu.pitt.cs1699.discard.Activities;
 
-/**
- * Created by Spencer Cousino on 3/28/2018.
- */
-
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ScrollView;
+import android.databinding.DataBindingUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.pitt.cs1699.discard.Database.Chatroom;
+import edu.pitt.cs1699.discard.Database.ChatroomDao;
+import edu.pitt.cs1699.discard.Database.DiscardDatabase;
+import edu.pitt.cs1699.discard.*;
 
 import edu.pitt.cs1699.discard.R;
 
+
+import static edu.pitt.cs1699.discard.Enums._PROXIMITY;
+import edu.pitt.cs1699.discard.Utilities.ChatroomAdapter;
+import edu.pitt.cs1699.discard.Utilities.Utilities;
+import edu.pitt.cs1699.discard.databinding.ActivityMainBinding;
+
+
 public class MainActivity extends AppCompatActivity {
+
+
+    private DiscardDatabase mDb;
+    RecyclerView roomList;
+
+    private ActivityMainBinding mBinding;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setTitle("Nearby Chat Rooms");
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        mBinding.recyclerView.setHasFixedSize(true);
+
+        mLayoutManager = new LinearLayoutManager(this);
+        mBinding.recyclerView.setLayoutManager(mLayoutManager);
+
+        mDb = DiscardDatabase.getTriviaDatabase(this);
+
     }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        //TODO
+        //LOCATION TRIGGER
+        float latitiude = 0;
+        float longitude = 0;
+
+        getRooms(latitiude, longitude);
+    }
+    private void getRooms(float latitude, float longitude){
+        ChatroomDao chatDao = mDb.getChatroomDao();
+        
+        //TODO
+        //List<Chatroom> nearbyRooms = chatDao.getChatroomsByLocation(latitude, longitude, _PROXIMITY);
+
+        List<Chatroom> nearbyRooms = Utilities.getPeopleList(this);
+        mAdapter = new ChatroomAdapter(nearbyRooms, this);
+        mBinding.recyclerView.setAdapter(mAdapter);
+    }
+
+    public static void goToChatroom(Context mContext) {
+        Intent login = new Intent(mContext, ChatroomActivity.class);
+        mContext.startActivity(login);
+    }
+
 
 }

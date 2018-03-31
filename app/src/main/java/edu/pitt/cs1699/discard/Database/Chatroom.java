@@ -16,6 +16,14 @@ public class Chatroom {
         this.name = "Chatroom";
     }
 
+    public Chatroom(String cr_id, String name, String description, float lat, float longitude){
+        this.cr_id = cr_id;
+        this.name = name;
+        this.description = description;
+        this.latitude = lat;
+        this.longitude = longitude;
+    }
+
 
     @PrimaryKey
     @NonNull

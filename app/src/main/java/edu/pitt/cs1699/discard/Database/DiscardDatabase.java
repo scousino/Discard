@@ -11,7 +11,7 @@ import android.content.Context;
 
 @Database(entities = {Chatroom.class}, version = 1)
 public abstract class DiscardDatabase extends RoomDatabase {
-    public abstract ChatroomDao getScoreHistoryDao();
+    public abstract ChatroomDao getChatroomDao();
 
     private static DiscardDatabase INSTANCE;
 
