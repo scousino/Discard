@@ -11,6 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Activities.MainActivity">
+        </activity>
+        <activity
+            android:name=".Activities.ChatroomActivity"
+            android:label="@string/title_activity_chatroom"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".Activities.TestingToolActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,7 +34,6 @@
                 </action>
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>
