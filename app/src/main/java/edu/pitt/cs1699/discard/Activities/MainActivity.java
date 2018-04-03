@@ -1,8 +1,10 @@
 package edu.pitt.cs1699.discard.Activities;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +12,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ScrollView;
 import android.databinding.DataBindingUtil;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +56,57 @@ public class MainActivity extends AppCompatActivity {
         mBinding.recyclerView.setLayoutManager(mLayoutManager);
 
         mDb = DiscardDatabase.getTriviaDatabase(this);
+
+        // For receiving from Group 6
+        Intent intent_6 = getIntent();
+        Bundle extras = intent_6.getExtras();
+        String json_string = extras.getString("NEW_MESSAGE");
+
+        String time, posted_date, posted_time, chat_id, message;
+
+        try {
+            // get JSONObject
+            JSONObject json_6 = new JSONObject(json_string);
+            time = json_6.getString("time");
+            posted_date = json_6.getString("Posted Date");
+            posted_time = json_6.getString("Posted Time");
+            JSONObject details = json_6.getJSONObject("Details");
+            chat_id = json_6.getString("ChatID");
+            message = json_6.getString("Message");
+        } catch (JSONException j) {
+            j.printStackTrace();
+        }
+        /*
+        Right now I'm not sure what we want to do with the info Group 6
+        gave us... I also have a feeling that there needs to be more done
+        to intercept their broadcast (right now I have the getIntent() stmt,
+        Receiver tag in the manifest, and the Receiver class under Utilties
+        */
+
+
+        // For sending to Group 8
+        String temp = null;
+        JSONObject trigger;
+
+        try {
+            trigger = new JSONObject();
+            trigger.put("Name", "Bread")
+                    .put("Price", "79")
+                    .put("Quantity", "1")
+                    .toString();
+
+
+            Intent intent_8 = new Intent("edu.pitt.cs1699.team8.SINGLE");
+            intent_8.putExtra("data", trigger.toString());
+            intent_8.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+            sendBroadcast(intent_8);
+        } catch (JSONException j) {
+            j.printStackTrace();
+        }
+        /*
+        I believe this part is correct. Only thing I can think of is to
+        move it somewhere else or to put something different into the JSONObject
+        */
 
     }
 
