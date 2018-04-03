@@ -19,10 +19,17 @@
         <activity android:name=".Activities.TestingToolActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".Utilities.Group7Receiver">
+            <intent-filter>
+                <action android:name="edu.pitt.cs1699.discard.NEW_MESSAGE">
+                </action>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
