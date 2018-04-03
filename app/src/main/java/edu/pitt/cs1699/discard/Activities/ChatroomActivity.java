@@ -32,12 +32,14 @@ public class ChatroomActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private String chatroomID = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         String chatroomName = intent.getStringExtra(CHATROOM_NAME);
-        String chatroomID = intent.getStringExtra(CHATROOM_ID);
+        chatroomID = intent.getStringExtra(CHATROOM_ID);
         setTitle(chatroomName);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_chatroom);
@@ -47,21 +49,21 @@ public class ChatroomActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mBinding.recyclerView.setLayoutManager(mLayoutManager);
 
-        mDb = DiscardDatabase.getTriviaDatabase(this);
+        mDb = DiscardDatabase.getDiscardDatabase(this);
     }
 
     protected void onResume(){
         super.onResume();
 
 
-        getMessages();
+        getMessages(chatroomID);
     }
 
-    private void getMessages(){
+    private void getMessages(String chat_id){
         MessageDao messageDao = mDb.getMessageDao();
 
         //TODO
-        List<Message> messages = Utilities.getMessageList();
+        List<Message> messages = Utilities.getMessageList(chat_id);
 
         mAdapter = new MessageAdapter(messages, this);
         mBinding.recyclerView.setAdapter(mAdapter);

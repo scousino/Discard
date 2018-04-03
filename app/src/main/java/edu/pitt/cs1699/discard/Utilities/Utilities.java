@@ -24,7 +24,7 @@ public class Utilities {
         return rooms;
     }
 
-    public static List<Message> getMessageList(){
+    public static List<Message> getMessageList(String cr_id){
         List<Message> messages = new ArrayList<>();
         messages.add(new Message("Test1", "A message has appeared", "Today", "11:11:11"));
         messages.add(new Message("Test2", "A 2nd message has appeared", "Yesterday", "6:06:06"));

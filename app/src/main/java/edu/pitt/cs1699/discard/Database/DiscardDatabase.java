@@ -16,7 +16,7 @@ public abstract class DiscardDatabase extends RoomDatabase {
 
     private static DiscardDatabase INSTANCE;
 
-    public static DiscardDatabase getTriviaDatabase(Context ctx) {
+    public static DiscardDatabase getDiscardDatabase(Context ctx) {
         if(INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(ctx, DiscardDatabase.class, "discard-database")
                     .fallbackToDestructiveMigration().build();
