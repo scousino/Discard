@@ -59,30 +59,35 @@ public class MainActivity extends AppCompatActivity {
 
         // For receiving from Group 6
         Intent intent_6 = getIntent();
-        Bundle extras = intent_6.getExtras();
-        String json_string = extras.getString("NEW_MESSAGE");
+        if (intent_6.getAction().equals("edu.pitt.cs1699.discard.NEW_MESSAGE")) {
+            Bundle extras = intent_6.getExtras();
+            String json_string = extras.getString("NEW_MESSAGE");
 
-        String time, posted_date, posted_time, chat_id, message;
+            String time, posted_date, posted_time, chat_id, message;
 
-        try {
-            // get JSONObject
-            JSONObject json_6 = new JSONObject(json_string);
-            time = json_6.getString("time");
-            posted_date = json_6.getString("Posted Date");
-            posted_time = json_6.getString("Posted Time");
-            JSONObject details = json_6.getJSONObject("Details");
-            chat_id = json_6.getString("ChatID");
-            message = json_6.getString("Message");
-        } catch (JSONException j) {
-            j.printStackTrace();
+            try {
+                // get JSONObject
+                JSONObject json_6 = new JSONObject(json_string);
+                time = json_6.getString("time");
+                posted_date = json_6.getString("Posted Date");
+                posted_time = json_6.getString("Posted Time");
+                JSONObject details = json_6.getJSONObject("Details");
+                chat_id = json_6.getString("ChatID");
+                message = json_6.getString("Message");
+            } catch (JSONException j) {
+                j.printStackTrace();
+            }
+            /*
+            Right now I'm not sure what we want to do with the info Group 6
+            gave us... I also have a feeling that there needs to be more done
+            to intercept their broadcast (right now I have the getIntent() stmt,
+            Receiver tag in the manifest, and the Receiver class under Utilties
+            */
+        } else {
+            Toast toast = Toast.makeText(getApplicationContext(), "Intent does not come from the correct app",
+                    Toast.LENGTH_LONG);
+            toast.show();
         }
-        /*
-        Right now I'm not sure what we want to do with the info Group 6
-        gave us... I also have a feeling that there needs to be more done
-        to intercept their broadcast (right now I have the getIntent() stmt,
-        Receiver tag in the manifest, and the Receiver class under Utilties
-        */
-
 
         // For sending to Group 8
         String temp = null;
