@@ -62,4 +62,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.SimpleVi
     public int getItemCount() {
         return mMessages.size();
     }
+
+    public void addMessage(Message msg) {
+        this.mMessages.add(msg);
+        super.notifyDataSetChanged();
+    }
 }

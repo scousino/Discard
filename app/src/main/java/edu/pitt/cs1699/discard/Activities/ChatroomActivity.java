@@ -1,13 +1,16 @@
 package edu.pitt.cs1699.discard.Activities;
 
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +36,8 @@ public class ChatroomActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
 
     private String chatroomID = "";
+
+    private List<Message> chatroomMessages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +67,28 @@ public class ChatroomActivity extends AppCompatActivity {
     private void getMessages(String chat_id){
         MessageDao messageDao = mDb.getMessageDao();
 
-        //TODO
-        List<Message> messages = Utilities.getMessageList(chat_id);
+        //Get messages from local db for the chatroom
+        messageDao.getAllChatroomMessages(chat_id).observe(this, new Observer<List<Message>>() {
+            @Override
+            public void onChanged(@Nullable List<Message> messages) {
+                if (messages != null) {
+                    chatroomMessages.addAll(messages);
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+        });
 
-        mAdapter = new MessageAdapter(messages, this);
+        mAdapter = new MessageAdapter(chatroomMessages, ChatroomActivity.this);
         mBinding.recyclerView.setAdapter(mAdapter);
+
+    }
+
+    public void keepMessage() {
+        //Initiate next group's stuff
+    }
+
+    public void discardMessage(String messageID) {
+        //Delete local message
+        //Initiate next group's stuff
     }
 }

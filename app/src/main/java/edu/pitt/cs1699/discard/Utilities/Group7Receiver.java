@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import java.util.Random;
 
 import edu.pitt.cs1699.discard.Activities.ChatroomActivity;
+import edu.pitt.cs1699.discard.Database.Chatroom;
 import edu.pitt.cs1699.discard.Database.DiscardDatabase;
 import edu.pitt.cs1699.discard.Database.Message;
 
@@ -83,20 +84,20 @@ public class Group7Receiver extends BroadcastReceiver {
         protected String doInBackground(AddMessageParam... addMsgParam) {
             JSONObject json_6;
             DiscardDatabase db;
-            String time, posted_date, posted_time, chat_id = "", message;
+            String posted_date, posted_time, chat_id = "", message;
             if(addMsgParam.length > 0) {
                 json_6 = addMsgParam[0].jsonData;
                 db = addMsgParam[0].db;
                 try {
-                    time = json_6.getString("time");
-                    posted_date = json_6.getString("Posted Date");
-                    posted_time = json_6.getString("Posted Time");
+                    posted_date = json_6.getJSONObject("Time").getString("Posted Date");
+                    posted_time = json_6.getJSONObject("Time").getString("Posted Time");
                     JSONObject details = json_6.getJSONObject("Details");
-                    chat_id = json_6.getString("ChatID");
-                    message = json_6.getString("Message");
+                    chat_id = details.getString("ChatID");
+                    message = details.getString("Message");
 
                     Message newMessage = new Message(chat_id, message, posted_date, posted_time);
                     db.getMessageDao().addMessage(newMessage);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -111,7 +112,7 @@ public class Group7Receiver extends BroadcastReceiver {
             Intent chatroom = new Intent(ctx, ChatroomActivity.class);
             chatroom.putExtra(CHATROOM_NAME, "Testing");
             chatroom.putExtra(CHATROOM_ID, chat_id);
-            ctx.startActivity(new Intent(ctx, ChatroomActivity.class));
+            ctx.startActivity(chatroom);
         }
     }
 
