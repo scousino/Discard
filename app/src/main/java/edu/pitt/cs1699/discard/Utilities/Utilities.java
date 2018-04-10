@@ -17,10 +17,6 @@ import edu.pitt.cs1699.discard.Database.MessageDao;
 import java.util.List;
 import java.util.ArrayList;
 
-import static edu.pitt.cs1699.discard.Enums.CHATROOM_ID;
-import static edu.pitt.cs1699.discard.Enums.CHATROOM_NAME;
-
-
 public class Utilities {
 
     public static List<Chatroom> getRoomList() {

@@ -15,9 +15,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 import edu.pitt.cs1699.discard.Database.Chatroom;
@@ -32,7 +36,6 @@ import edu.pitt.cs1699.discard.Utilities.Utilities;
 import edu.pitt.cs1699.discard.databinding.ActivityChatroomBinding;
 
 import static edu.pitt.cs1699.discard.Enums.CHATROOM_ID;
-import static edu.pitt.cs1699.discard.Enums.CHATROOM_NAME;
 import static edu.pitt.cs1699.discard.Enums._PROXIMITY;
 
 public class ChatroomActivity extends AppCompatActivity {
@@ -57,7 +60,6 @@ public class ChatroomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        chatroomName = intent.getStringExtra(CHATROOM_NAME);
         chatroomID = intent.getStringExtra(CHATROOM_ID);
 
         mContext = this;
@@ -111,6 +113,22 @@ public class ChatroomActivity extends AppCompatActivity {
 
     static public void keepMessage(Context context) {
         //Initiate next group's stuff
+        Intent group8 = new Intent("edu.pitt.cs1699.team8.SINGLE");
+        Random rand = new Random();
+
+        //Create random data to send to Group 8
+        try {
+            JSONObject itemData = new JSONObject();
+            itemData.put("Name", "6 pack of Coca-Cola");
+            itemData.put("Price", rand.nextInt(500));
+            itemData.put("Quantity", rand.nextInt(5));
+
+            //Send intent to Group 8's activity
+            mContext.startActivity(group8);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         Toast.makeText(context, "Keep Message", Toast.LENGTH_SHORT).show();
     }
 
@@ -126,7 +144,6 @@ public class ChatroomActivity extends AppCompatActivity {
         //  Note - ChatroomActivity is set as noHistory in the manifest so that when this new activity is launched, it destroys the previous one.
         //         This updates the view without the deleted message, and avoids the message appearing on back button press
         Intent intent = new Intent(mContext, ChatroomActivity.class);
-        intent.putExtra(CHATROOM_NAME, chatroomName);
         intent.putExtra(CHATROOM_ID, chatroomID);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         mContext.startActivity(intent);
