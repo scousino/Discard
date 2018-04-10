@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.android.databinding.library.baseAdapters.BR;
 
+import edu.pitt.cs1699.discard.Activities.ChatroomActivity;
 import edu.pitt.cs1699.discard.Database.Message;
 import edu.pitt.cs1699.discard.R;
 import edu.pitt.cs1699.discard.databinding.MessageListItemBinding;
