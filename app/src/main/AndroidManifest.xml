@@ -19,6 +19,7 @@
         </activity>
         <activity
             android:name=".Activities.ChatroomActivity"
+            android:noHistory="true"
             android:label="@string/title_activity_chatroom"
             android:theme="@style/AppTheme" />
 

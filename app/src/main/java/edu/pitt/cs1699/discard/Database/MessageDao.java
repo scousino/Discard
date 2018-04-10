@@ -22,6 +22,9 @@ public interface MessageDao {
     @Query("SELECT * FROM tblMessages WHERE cr_id = :chatroomID ORDER BY msg_id")
     public LiveData<List<Message>> getAllChatroomMessages(String chatroomID);
 
+    @Query("SELECT * FROM tblMessages WHERE msg_id = :msgID")
+    public LiveData<Message> getMessageByID(int msgID);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void addMessage(Message msg);
 
