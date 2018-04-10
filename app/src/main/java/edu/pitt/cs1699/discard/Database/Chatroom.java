@@ -16,7 +16,7 @@ public class Chatroom {
         this.name = "Chatroom";
     }
 
-    public Chatroom(String cr_id, String name, String description, float lat, float longitude){
+    public Chatroom(String cr_id, String name, String description, double lat, double longitude){
         this.cr_id = cr_id;
         this.name = name;
         this.description = description;
@@ -34,8 +34,8 @@ public class Chatroom {
 
     public String description;
 
-    public float latitude;
-    public float longitude;
+    public double latitude;
+    public double longitude;
 
     public String startDate;
     public String startTime;

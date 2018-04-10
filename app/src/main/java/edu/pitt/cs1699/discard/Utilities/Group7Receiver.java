@@ -17,7 +17,6 @@ import edu.pitt.cs1699.discard.Database.DiscardDatabase;
 import edu.pitt.cs1699.discard.Database.Message;
 
 import static edu.pitt.cs1699.discard.Enums.CHATROOM_ID;
-import static edu.pitt.cs1699.discard.Enums.CHATROOM_NAME;
 
 public class Group7Receiver extends BroadcastReceiver {
     private Context ctx;
@@ -96,6 +95,13 @@ public class Group7Receiver extends BroadcastReceiver {
                     message = details.getString("Message");
 
                     Message newMessage = new Message(chat_id, message, posted_date, posted_time);
+                    //Determine if chat room already exists, if not create a new one
+                    if(db.getChatroomDao().getChatroomById(chat_id) == null) {
+                        Chatroom newChatroom = new Chatroom(chat_id, "New Chatroom", "This is a brand new chatroom!",
+                                40.444489,-79.953228);
+                        db.getChatroomDao().addChatroom(newChatroom);
+                    }
+
                     db.getMessageDao().addMessage(newMessage);
 
                 } catch (JSONException e) {
@@ -110,7 +116,6 @@ public class Group7Receiver extends BroadcastReceiver {
         @Override
         protected void onPostExecute(String chat_id) {
             Intent chatroom = new Intent(ctx, ChatroomActivity.class);
-            chatroom.putExtra(CHATROOM_NAME, "Testing");
             chatroom.putExtra(CHATROOM_ID, chat_id);
             ctx.startActivity(chatroom);
         }

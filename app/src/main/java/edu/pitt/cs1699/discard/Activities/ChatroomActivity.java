@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import edu.pitt.cs1699.discard.Database.Chatroom;
 import edu.pitt.cs1699.discard.Database.DiscardDatabase;
 import edu.pitt.cs1699.discard.Database.Message;
 import edu.pitt.cs1699.discard.Database.MessageDao;
@@ -24,7 +25,6 @@ import edu.pitt.cs1699.discard.Utilities.Utilities;
 import edu.pitt.cs1699.discard.databinding.ActivityChatroomBinding;
 
 import static edu.pitt.cs1699.discard.Enums.CHATROOM_ID;
-import static edu.pitt.cs1699.discard.Enums.CHATROOM_NAME;
 
 public class ChatroomActivity extends AppCompatActivity {
 
@@ -43,9 +43,7 @@ public class ChatroomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        String chatroomName = intent.getStringExtra(CHATROOM_NAME);
         chatroomID = intent.getStringExtra(CHATROOM_ID);
-        setTitle(chatroomName);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_chatroom);
 
@@ -57,9 +55,22 @@ public class ChatroomActivity extends AppCompatActivity {
         mDb = DiscardDatabase.getDiscardDatabase(this);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //TODO: TEST
+        mDb.getChatroomDao().getChatroomById(chatroomID).observe(this, new Observer<Chatroom>() {
+            @Override
+            public void onChanged(@Nullable Chatroom chatroom) {
+                if(chatroom != null) {
+                    setTitle(chatroom.name);
+                }
+            }
+        });
+    }
+
     protected void onResume(){
         super.onResume();
-
 
         getMessages(chatroomID);
     }

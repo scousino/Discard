@@ -1,5 +1,6 @@
 package edu.pitt.cs1699.discard.Database;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -19,7 +20,7 @@ public interface ChatroomDao {
     public Chatroom[] getAllChatrooms();
 
     @Query("SELECT * FROM tblChatroom WHERE cr_id = :chatroomID")
-    public Chatroom getChatroomById(String chatroomID);
+    public LiveData<Chatroom> getChatroomById(String chatroomID);
 
     @Query("SELECT * FROM tblChatroom WHERE (longitude <= (:longitude + :proximity) AND longitude >= (:longitude - :proximity)) AND (latitude <= (:latitude + :proximity) AND latitude >= (:latitude - :proximity))")
     public List<Chatroom> getChatroomsByLocation(float longitude, float latitude, double proximity);
