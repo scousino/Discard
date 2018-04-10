@@ -21,7 +21,6 @@ import edu.pitt.cs1699.discard.databinding.ChatroomListItemBinding;
 import java.util.List;
 
 import static edu.pitt.cs1699.discard.Enums.CHATROOM_ID;
-import static edu.pitt.cs1699.discard.Enums.CHATROOM_NAME;
 
 public class ChatroomAdapter extends RecyclerView.Adapter<ChatroomAdapter.SimpleViewHolder> {
 
