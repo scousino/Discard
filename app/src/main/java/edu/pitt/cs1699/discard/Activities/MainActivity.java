@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DiscardDatabase mDb;
     RecyclerView roomList;
-
+    private Context mContext;
     private ActivityMainBinding mBinding;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("Nearby Chat Rooms");
+
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         mBinding.recyclerView.setHasFixedSize(true);
@@ -55,7 +57,11 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mBinding.recyclerView.setLayoutManager(mLayoutManager);
 
+        mContext = this;
+
         mDb = DiscardDatabase.getDiscardDatabase(this);
+        Utilities util = new Utilities();
+        util.insertDataBase(mDb);
 
         // For receiving from Group 6
         Intent intent_6 = getIntent();
@@ -108,10 +114,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException j) {
             j.printStackTrace();
         }
-        /*
-        I believe this part is correct. Only thing I can think of is to
-        move it somewhere else or to put something different into the JSONObject
-        */
+
 
     }
 
@@ -127,17 +130,25 @@ public class MainActivity extends AppCompatActivity {
         getRooms(latitiude, longitude);
     }
     private void getRooms(float latitude, float longitude){
-        ChatroomDao chatDao = mDb.getChatroomDao();
-
-        //TODO
-        //List<Chatroom> nearbyRooms = chatDao.getChatroomsByLocation(latitude, longitude, _PROXIMITY);
-
-        //TEST ONLY
-        List<Chatroom> nearbyRooms = Utilities.getPeopleList(this);
-
-
-        mAdapter = new ChatroomAdapter(nearbyRooms, this);
-        mBinding.recyclerView.setAdapter(mAdapter);
+        new getRooms().execute(mDb, latitude, longitude);
     }
 
+    private class getRooms extends AsyncTask<Object, Void, List<Chatroom>> {
+
+        @Override
+        protected List<Chatroom> doInBackground(Object... args) {
+            DiscardDatabase mDb = (DiscardDatabase) args[0];
+            float lat = (float) args[1];
+            float lon = (float) args[2];
+            ChatroomDao chatDao = mDb.getChatroomDao();
+            List<Chatroom> nearbyRooms = chatDao.getChatroomsByLocation(lat, lon, _PROXIMITY);
+            return nearbyRooms;
+        }
+
+        @Override
+        protected void onPostExecute(List<Chatroom> rooms) {
+            mAdapter = new ChatroomAdapter(rooms, mContext);
+            mBinding.recyclerView.setAdapter(mAdapter);
+        }
+    }
 }

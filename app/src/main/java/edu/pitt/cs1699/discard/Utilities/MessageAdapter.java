@@ -54,7 +54,24 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.SimpleVi
     public void onBindViewHolder(SimpleViewHolder holder, int position) {
         final Message message = mMessages.get(position);
 
+        final View.OnClickListener keepClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ChatroomActivity.keepMessage(mContext);
+            }
+        };
+
+        final View.OnClickListener discardClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ChatroomActivity.discardMessage(message, mContext);
+
+            }
+        };
         holder.getBinding().setVariable(BR.message, message);
+        holder.getBinding().setVariable(BR.keepClick, keepClick);
+        holder.getBinding().setVariable(BR.discardClick, discardClick);
+
         holder.getBinding().executePendingBindings();
     }
 
