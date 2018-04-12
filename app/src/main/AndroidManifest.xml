@@ -30,6 +30,11 @@
             </intent-filter>
         </receiver>
 
+        <service android:name=".Utilities.LocationTimeService">
+            <intent-filter>
+                <action android:name="edu.pitt.cs1699.discard.LOCATION"></action>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

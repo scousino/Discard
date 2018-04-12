@@ -8,17 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import com.android.databinding.library.baseAdapters.BR;
 
+import java.util.List;
+
 import edu.pitt.cs1699.discard.Activities.ChatroomActivity;
-import edu.pitt.cs1699.discard.Activities.MainActivity;
 import edu.pitt.cs1699.discard.Database.Chatroom;
-import edu.pitt.cs1699.discard.databinding.ActivityMainBinding;
 import edu.pitt.cs1699.discard.R;
 import edu.pitt.cs1699.discard.databinding.ChatroomListItemBinding;
-
-import java.util.List;
 
 import static edu.pitt.cs1699.discard.Enums.CHATROOM_ID;
 
@@ -63,7 +60,6 @@ public class ChatroomAdapter extends RecyclerView.Adapter<ChatroomAdapter.Simple
                 Intent intent = new Intent(mContext, ChatroomActivity.class);
                 String roomName = chatroom.name;
                 String roomID = chatroom.cr_id;
-                intent.putExtra(CHATROOM_NAME, roomName);
                 intent.putExtra(CHATROOM_ID, roomID);
                 mContext.startActivity(intent);
             }
