@@ -58,6 +58,28 @@ public class LocationTimeService extends Service {
                     Toast.makeText(getApplicationContext(), "Lat: " + lat + ", Long: " + lon, Toast.LENGTH_SHORT).show();
                     break;
                 case MSG_TIME:
+                    Bundle timeBundle = new Bundle();
+                    timeBundle = (Bundle)msg.obj;
+                    JSONObject jsonTimeObj = null;
+                    JSONObject jsonTime = null;
+                    String date = "";
+                    String time = "";
+
+                    try {
+                        jsonTimeObj = new JSONObject(timeBundle.getString("time"));
+                        jsonTime = jsonTimeObj.getJSONObject("Time");
+                        date = jsonTime.getString("Date");
+                        time = jsonTime.getString("Time");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    Intent intentTime = new Intent(getApplicationContext(), MainActivity.class);
+                    intentTime.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intentTime.putExtra("date", date);
+                    intentTime.putExtra("time", time);
+                    startActivity(intentTime);
+
                     Toast.makeText(getApplicationContext(), "Time, Time, Time", Toast.LENGTH_SHORT).show();
                     break;
                 default:

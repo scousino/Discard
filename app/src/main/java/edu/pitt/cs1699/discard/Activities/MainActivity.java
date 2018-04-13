@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     private float latitiude = 0;
     private float longitude = 0;
+    //private String
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +78,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         getRooms(latitiude, longitude);
+
+
+        //TODO
+        //TIME TRIGGER
+
+
     }
     private void getRooms(float latitude, float longitude){
         new getRooms().execute(mDb, latitude, longitude);

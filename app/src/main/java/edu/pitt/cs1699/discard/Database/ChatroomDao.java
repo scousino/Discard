@@ -20,6 +20,9 @@ public interface ChatroomDao {
     @Query("SELECT * FROM tblChatroom WHERE (longitude <= (:longitude + :proximity) AND longitude >= (:longitude - :proximity)) AND (latitude <= (:latitude + :proximity) AND latitude >= (:latitude - :proximity))")
     public List<Chatroom> getChatroomsByLocation( float latitude, float longitude,double proximity);
 
+    @Query("SELECT * FROM tblChatroom WHERE (startDate == (:startDate)) AND (startTime == (:startTime) AND endDate == (:endDate) AND endTime == (:endTime))")
+    public List<Chatroom> getChatroomsByTime( String startDate, String startTime, String endDate, String endTime);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void addChatroom(Chatroom newChatroom);
 
