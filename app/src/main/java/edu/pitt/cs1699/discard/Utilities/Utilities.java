@@ -1,21 +1,15 @@
 package edu.pitt.cs1699.discard.Utilities;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
-import edu.pitt.cs1699.discard.Activities.ChatroomActivity;
 import edu.pitt.cs1699.discard.Database.Chatroom;
 import edu.pitt.cs1699.discard.Database.ChatroomDao;
 import edu.pitt.cs1699.discard.Database.DiscardDatabase;
 import edu.pitt.cs1699.discard.Database.Message;
 import edu.pitt.cs1699.discard.Database.MessageDao;
-
-import java.util.List;
-import java.util.ArrayList;
 
 public class Utilities {
 
@@ -25,6 +19,15 @@ public class Utilities {
         rooms.add(new Chatroom("Test2", "Another Chat Room", "This is a chat room description", 0, 0));
         rooms.add(new Chatroom("Test3", "A Third Chat Room", "This is a chat room description", 0, 0));
         rooms.add(new Chatroom("Test4", "AnotherOne", "This is a chat room description", 0, 0));
+        rooms.add(new Chatroom("Test5","Location Room 1", "This is location 1", 40.4406,-79.9958));
+        rooms.add(new Chatroom("Test6","Location Room 2", "This is location 2", 40.4506,-79.9958));
+        rooms.add(new Chatroom("Test7","Location Room 3", "This is location 3", 40.4306,-79.9958));
+        rooms.add(new Chatroom("Test8","Location Room 4", "This is location 4", 40.4606,-79.9958));
+        rooms.add(new Chatroom("Test9","Location Room 5", "This is location 5", 40.4206,-79.9958));
+        rooms.add(new Chatroom("Test10","Location Room 6", "This is location 6", 40.4406,-79.9858));
+        rooms.add(new Chatroom("Test11","Location Room 7", "This is location 7", 40.4406,-79.9758));
+        rooms.add(new Chatroom("Test12","Location Room 8", "This is location 8", 40.4406,-80.0058));
+        rooms.add(new Chatroom("Test13","Location Room 9", "This is location 9", 40.4406,-80.0158));
 
         return rooms;
     }

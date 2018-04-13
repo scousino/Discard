@@ -12,6 +12,8 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.pitt.cs1699.discard.Activities.MainActivity;
+
 public class LocationTimeService extends Service {
    static final int MSG_LOCATION = 1;
    static final int MSG_TIME = 2;
@@ -46,6 +48,11 @@ public class LocationTimeService extends Service {
                         e.printStackTrace();
                     }
 
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("lat",lat);
+                    intent.putExtra("long",lon);
+                    startActivity(intent);
 
 
                     Toast.makeText(getApplicationContext(), "Lat: " + lat + ", Long: " + lon, Toast.LENGTH_SHORT).show();

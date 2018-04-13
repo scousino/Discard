@@ -9,8 +9,6 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
-import edu.pitt.cs1699.discard.Enums;
-
 @Dao
 public interface ChatroomDao {
     @Query("SELECT * FROM tblChatroom")
@@ -20,7 +18,7 @@ public interface ChatroomDao {
     public LiveData<Chatroom> getChatroomById(String chatroomID);
 
     @Query("SELECT * FROM tblChatroom WHERE (longitude <= (:longitude + :proximity) AND longitude >= (:longitude - :proximity)) AND (latitude <= (:latitude + :proximity) AND latitude >= (:latitude - :proximity))")
-    public List<Chatroom> getChatroomsByLocation(float longitude, float latitude, double proximity);
+    public List<Chatroom> getChatroomsByLocation( float latitude, float longitude,double proximity);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void addChatroom(Chatroom newChatroom);
