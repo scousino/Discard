@@ -9,6 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 import edu.pitt.cs1699.discard.Database.Chatroom;
@@ -16,6 +19,8 @@ import edu.pitt.cs1699.discard.Database.ChatroomDao;
 import edu.pitt.cs1699.discard.Database.DiscardDatabase;
 import edu.pitt.cs1699.discard.R;
 import edu.pitt.cs1699.discard.Utilities.ChatroomAdapter;
+import edu.pitt.cs1699.discard.Utilities.EventAdditionTrigger;
+import edu.pitt.cs1699.discard.Utilities.Group7Receiver;
 import edu.pitt.cs1699.discard.Utilities.Utilities;
 import edu.pitt.cs1699.discard.databinding.ActivityMainBinding;
 
@@ -61,6 +66,13 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         Intent intent = getIntent();
+        if(intent.getAction() != null) {
+            if (intent.getAction().equals("edu.pitt.cs1699.discard.EVENT")) {
+                String json_string = intent.getStringExtra("data");
+                EventAdditionTrigger EAT = new EventAdditionTrigger();
+                EAT.addEvent(this, json_string);
+            }
+        }
         if(intent != null){
             if(intent.hasExtra("lat")){
                 String strLat = intent.getStringExtra("lat");
