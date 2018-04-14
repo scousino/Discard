@@ -96,8 +96,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     static public void keepChatroom(Context context) {
-        //TODO
-        //SOME TRIGGER GOES HERE
+        //TODO jcb124
+        /*Send info to group 8
+         *Group 8 Trigger - Adding a recipe to the shopping list
+         *If chatroom is kept, suggest a recipe related to the event/chatroom
+         *Example: Recipe for hot wings if user keeps a chatroom for a football game
+         */
     }
 
     static public void discardChatroom(Chatroom room, Context context) {
