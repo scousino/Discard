@@ -2,18 +2,25 @@ package edu.pitt.cs1699.discard.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Random;
 
 import edu.pitt.cs1699.discard.Database.Chatroom;
 import edu.pitt.cs1699.discard.Database.ChatroomDao;
 import edu.pitt.cs1699.discard.Database.DiscardDatabase;
+
 import edu.pitt.cs1699.discard.R;
 import edu.pitt.cs1699.discard.Utilities.ChatroomAdapter;
 import edu.pitt.cs1699.discard.Utilities.Utilities;
@@ -25,9 +32,9 @@ import static edu.pitt.cs1699.discard.Enums._PROXIMITY;
 public class MainActivity extends AppCompatActivity {
 
 
-    private DiscardDatabase mDb;
+    private static DiscardDatabase mDb;
     RecyclerView roomList;
-    private Context mContext;
+    private static Context mContext;
     private ActivityMainBinding mBinding;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -51,9 +58,6 @@ public class MainActivity extends AppCompatActivity {
         mContext = this;
 
         mDb = DiscardDatabase.getDiscardDatabase(this);
-        Utilities util = new Utilities();
-        util.insertDataBase(mDb);
-
     }
 
     @Override
@@ -73,13 +77,31 @@ public class MainActivity extends AppCompatActivity {
         }
 
         getRooms(latitiude, longitude);
-
-
+        
         //TODO
         //TIME TRIGGER
 
-
     }
+
+    static public void keepChatroom(Context context) {
+        //TODO
+        //SOME TRIGGER GOES HERE
+    }
+
+    static public void discardChatroom(Chatroom room, Context context) {
+        ChatroomDao roomDao = mDb.getChatroomDao();
+        new deleteRoom().execute(mDb, room);
+
+        //TODO
+        //SOME TRIGGER GOES HERE
+
+
+        Intent intent = new Intent(mContext, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        mContext.startActivity(intent);
+    }
+
+
     private void getRooms(float latitude, float longitude){
         new getRooms().execute(mDb, latitude, longitude);
     }
@@ -109,5 +131,42 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("Longitude","LongitudeDouble");
         intent.putExtra("Latitude","LatitudeDouble");
         sendBroadcast(intent);
+    }
+
+    private static class deleteRoom extends AsyncTask<Object, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Object... args) {
+            DiscardDatabase mDb = (DiscardDatabase) args[0];
+            Chatroom room = (Chatroom) args[1];
+            ChatroomDao roomDao = mDb.getChatroomDao();
+            roomDao.closeChatroom(room);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+
+        }
+    }
+
+
+    private Boolean firstTime = null;
+    /**
+     * Checks if the user is opening the app for the first time.
+     * Note that this method should be placed inside an activity and it can be called multiple times.
+     * @return boolean
+     */
+    private boolean isFirstTime() {
+        if (firstTime == null) {
+            SharedPreferences mPreferences = this.getSharedPreferences("first_time", Context.MODE_PRIVATE);
+            firstTime = mPreferences.getBoolean("firstTime", true);
+            if (firstTime) {
+                SharedPreferences.Editor editor = mPreferences.edit();
+                editor.putBoolean("firstTime", false);
+                editor.commit();
+            }
+        }
+        return firstTime;
     }
 }
