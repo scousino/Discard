@@ -24,6 +24,19 @@ public class Chatroom {
         this.longitude = longitude;
     }
 
+    public Chatroom(String cr_id, String name, String description, double lat, double longitude,
+                    String sDate, String sTime, String eDate, String eTime){
+        this.cr_id = cr_id;
+        this.name = name;
+        this.description = description;
+        this.latitude = lat;
+        this.longitude = longitude;
+        this.startDate = sDate;
+        this.startTime = sTime;
+        this.endDate = eDate;
+        this.endTime = eTime;
+    }
+
 
     @PrimaryKey
     @NonNull

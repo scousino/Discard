@@ -28,6 +28,8 @@ public class Utilities {
         rooms.add(new Chatroom("Test11","Location Room 7", "This is location 7", 40.4406,-79.9758));
         rooms.add(new Chatroom("Test12","Location Room 8", "This is location 8", 40.4406,-80.0058));
         rooms.add(new Chatroom("Test13","Location Room 9", "This is location 9", 40.4406,-80.0158));
+        rooms.add(new Chatroom("Test14","Location Room 10", "This is location 10", 40.4406,-80.0158, "2018-04-14", "10:35:00", "2018-04-14", "14:35:00"));
+        rooms.add(new Chatroom("Test15","Location Room 11", "This is location 11", 40.4406,-80.0158, "2018-04-15", "22:00:00", "2018-04-15", "23:59:59"));
 
         return rooms;
     }
