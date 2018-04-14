@@ -71,11 +71,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        //TODO
-        //LOCATION TRIGGER
-
-
-
         getRooms(latitiude, longitude);
     }
     private void getRooms(float latitude, float longitude){
@@ -99,5 +94,13 @@ public class MainActivity extends AppCompatActivity {
             mAdapter = new ChatroomAdapter(rooms, mContext);
             mBinding.recyclerView.setAdapter(mAdapter);
         }
+    }
+
+    public void Group8LocationTrigger(){
+        Intent intent = new Intent();
+        intent.setAction("edu.pitt.cs1699.team8.StoreArrival");
+        intent.putExtra("Longitude","LongitudeDouble");
+        intent.putExtra("Latitude","LatitudeDouble");
+        sendBroadcast(intent);
     }
 }
