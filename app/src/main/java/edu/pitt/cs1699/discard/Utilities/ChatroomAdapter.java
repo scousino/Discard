@@ -13,6 +13,7 @@ import com.android.databinding.library.baseAdapters.BR;
 import java.util.List;
 
 import edu.pitt.cs1699.discard.Activities.ChatroomActivity;
+import edu.pitt.cs1699.discard.Activities.MainActivity;
 import edu.pitt.cs1699.discard.Database.Chatroom;
 import edu.pitt.cs1699.discard.R;
 import edu.pitt.cs1699.discard.databinding.ChatroomListItemBinding;
@@ -64,8 +65,24 @@ public class ChatroomAdapter extends RecyclerView.Adapter<ChatroomAdapter.Simple
                 mContext.startActivity(intent);
             }
         };
+        final View.OnClickListener keepClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.keepChatroom(mContext);
+            }
+        };
+
+        final View.OnClickListener discardClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.discardChatroom(chatroom, mContext);
+
+            }
+        };
         holder.getBinding().setVariable(BR.chatroom, chatroom);
         holder.getBinding().setVariable(BR.onClick, click);
+        holder.getBinding().setVariable(BR.keepClick, keepClick);
+        holder.getBinding().setVariable(BR.discardClick, discardClick);
         holder.getBinding().executePendingBindings();
     }
 

@@ -9,29 +9,58 @@
         <variable
             name="onClick"
             type="android.view.View.OnClickListener"/>
+        <variable
+            name="keepClick"
+            type="android.view.View.OnClickListener"/>
+        <variable
+            name="discardClick"
+            type="android.view.View.OnClickListener"/>
     </data>
-
-    <LinearLayout
-        android:clickable="true"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClickListener="@{onClick}"
-        android:layout_marginBottom="@dimen/text_margin"
+        android:orientation="horizontal"
         android:background="@drawable/chatroomborder"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/nameTextView"
-            android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:clickable="true"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="30sp"
-            android:text="@{chatroom.name}"/>
-
-        <TextView
-            android:id="@+id/descriptionTextView"
-            android:layout_width="match_parent"
+            android:onClickListener="@{onClick}"
+            android:layout_marginBottom="@dimen/text_margin"
+            android:textAlignment="viewStart"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/nameTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:text="@{chatroom.name}"/>
+            <TextView
+                android:id="@+id/descriptionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="@{chatroom.description}"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="@{chatroom.description}"/>
-    </LinearLayout>
+            android:layout_alignParentEnd="true"
+            android:orientation="vertical" >
+            <Button
+                android:id="@+id/discardMessageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Discard"
+                android:onClick="@{discardClick}"
+                android:background="@drawable/message_button" />
+            <Button
+                android:id="@+id/keepMessageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Keep"
+                android:onClick="@{keepClick}"
+                android:background="@drawable/message_button" />
+        </LinearLayout>
+    </RelativeLayout>
 </layout>
