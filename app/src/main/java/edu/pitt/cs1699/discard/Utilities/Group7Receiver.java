@@ -17,6 +17,7 @@ import edu.pitt.cs1699.discard.Database.DiscardDatabase;
 import edu.pitt.cs1699.discard.Database.Message;
 
 import static edu.pitt.cs1699.discard.Enums.CHATROOM_ID;
+import static edu.pitt.cs1699.discard.Enums.MESSAGE_TRIGGER_ACTION;
 
 public class Group7Receiver extends BroadcastReceiver {
     private Context ctx;
@@ -25,7 +26,7 @@ public class Group7Receiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         ctx = context;
         // For receiving from Group 6
-        if (intent.getAction().equals("edu.pitt.cs1699.discard.NEW_MESSAGE")) {
+        if (MESSAGE_TRIGGER_ACTION.equals(intent.getAction())) {
             String json_string = intent.getStringExtra("data");
 
             try {
@@ -38,16 +39,7 @@ public class Group7Receiver extends BroadcastReceiver {
             } catch (JSONException j) {
                 j.printStackTrace();
             }
-            /*
-            Right now I'm not sure what we want to do with the info Group 6
-            gave us... I also have a feeling that there needs to be more done
-            to intercept their broadcast (right now I have the getIntent() stmt,
-            Receiver tag in the manifest, and the Receiver class under Utilties
-            */
-        } else {
-            Toast toast = Toast.makeText(context, "Intent does not come from the correct app",
-                    Toast.LENGTH_LONG);
-            toast.show();
+
         }
 
         // For sending to Group 8
@@ -70,10 +62,6 @@ public class Group7Receiver extends BroadcastReceiver {
         } catch (JSONException j) {
             j.printStackTrace();
         }
-        /*
-        I believe this part is correct. Only thing I can think of is to
-        move it somewhere else or to put something different into the JSONObject
-        */
 
     }
 
@@ -96,7 +84,7 @@ public class Group7Receiver extends BroadcastReceiver {
 
                     Message newMessage = new Message(chat_id, message, posted_date, posted_time);
                     //Determine if chat room already exists, if not create a new one
-                    if(db.getChatroomDao().getChatroomById(chat_id) == null) {
+                    if(db.getChatroomDao().getChatroomById(chat_id).getValue() == null) {
                         Chatroom newChatroom = new Chatroom(chat_id, "New Chatroom", "This is a brand new chatroom!",
                                 40.444489,-79.953228);
                         db.getChatroomDao().addChatroom(newChatroom);

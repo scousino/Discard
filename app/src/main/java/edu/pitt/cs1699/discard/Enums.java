@@ -13,4 +13,5 @@ public final class Enums {
     // Enum for message sent through the chatroom adapter's intent for chatroom activity
     public static final String CHATROOM_ID = "chatroom:ID";
 
+    public static final String MESSAGE_TRIGGER_ACTION = "edu.pitt.cs1699.discard.NEW_MESSAGE";
 }
