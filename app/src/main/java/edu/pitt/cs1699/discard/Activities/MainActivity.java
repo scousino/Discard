@@ -1,16 +1,20 @@
 package edu.pitt.cs1699.discard.Activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -95,13 +99,66 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    static public void keepChatroom(Context context) {
-        //TODO jcb124
+    static public void keepChatroom(Chatroom room, Context context) {
         /*Send info to group 8
          *Group 8 Trigger - Adding a recipe to the shopping list
          *If chatroom is kept, suggest a recipe related to the event/chatroom
          *Example: Recipe for hot wings if user keeps a chatroom for a football game
          */
+
+        final Context tContext = context;
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Relevant Recipe")
+                .setMessage("Members of \"" + room.name + "\" recommend Hot Wings for this event! Would you like to add Hot Wings to your shopping list?");
+
+        builder.setPositiveButton("Yes!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent();
+                intent.setAction("edu.pitt.cs1699.team8.MULTI");
+                String triggerData = "";
+                try {
+                    JSONObject item1 = new JSONObject()
+                            .put("Name", "Chicken Wings")
+                            .put("Price", "5")
+                            .put("Quantity", "12");
+
+                    JSONObject item2 = new JSONObject()
+                            .put("Name", "Hot Pepper Sauce")
+                            .put("Price", "3")
+                            .put("Quantity", "10");
+
+                    JSONObject item3 = new JSONObject()
+                            .put("Name", "Butter")
+                            .put("Price", "2")
+                            .put("Quantity", "10");
+
+                    JSONArray items = new JSONArray();
+                    items.put(item1);
+                    items.put(item2);
+                    items.put(item3);
+
+                    JSONObject root = new JSONObject().put("Items", items);
+
+                    triggerData = root.toString();
+
+                } catch (JSONException je) {
+                    je.printStackTrace();
+                }
+                intent.putExtra("multipleItemData", triggerData);
+                tContext.startActivity(intent);
+            }
+        });
+
+        builder.setNegativeButton("No!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     static public void discardChatroom(Chatroom room, Context context) {

@@ -68,7 +68,7 @@ public class ChatroomAdapter extends RecyclerView.Adapter<ChatroomAdapter.Simple
         final View.OnClickListener keepClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.keepChatroom(mContext);
+                MainActivity.keepChatroom(chatroom, mContext);
             }
         };
 
