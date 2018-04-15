@@ -7,9 +7,15 @@ import android.os.AsyncTask;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import edu.pitt.cs1699.discard.Activities.ChatroomActivity;
 import edu.pitt.cs1699.discard.Database.Chatroom;
 import edu.pitt.cs1699.discard.Database.DiscardDatabase;
+import edu.pitt.cs1699.discard.Database.Message;
 
 import static edu.pitt.cs1699.discard.Enums.CHATROOM_ID;
 
@@ -57,22 +63,22 @@ public class EventAdditionTrigger {
                     Chatroom newChatroom = new Chatroom(chat_id, name, desc, lat, lon,
                             startDate, startTime, endDate, endTime);
 
-                    if(db.getChatroomDao().getChatroomById(chat_id) == null) {
-                        db.getChatroomDao().addChatroom(newChatroom);
-                    }
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                    DateFormat tf = new SimpleDateFormat("HH:mm:ss", Locale.US);
+                    Date current = new Date();
+                    Message newMessage = new Message(chat_id, "Event Created!", df.format(current), tf.format(current));
+
+                    db.getChatroomDao().addChatroom(newChatroom);
+                    db.getMessageDao().addMessage(newMessage);
+                    Intent chatroom = new Intent(ctx, ChatroomActivity.class);
+                    chatroom.putExtra(CHATROOM_ID, chat_id);
+                    ctx.startActivity(chatroom);
 
                 } catch(JSONException je) {
                     je.printStackTrace();
                 }
             }
             return chat_id;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            Intent chatroom = new Intent(ctx, ChatroomActivity.class);
-            chatroom.putExtra(CHATROOM_ID, s);
-            ctx.startActivity(chatroom);
         }
     }
 
