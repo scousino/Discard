@@ -11,28 +11,19 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
-import java.util.Random;
 
 import edu.pitt.cs1699.discard.Database.Chatroom;
 import edu.pitt.cs1699.discard.Database.ChatroomDao;
 import edu.pitt.cs1699.discard.Database.DiscardDatabase;
-
 import edu.pitt.cs1699.discard.R;
 import edu.pitt.cs1699.discard.Utilities.ChatroomAdapter;
 import edu.pitt.cs1699.discard.Utilities.EventAdditionTrigger;
-import edu.pitt.cs1699.discard.Utilities.Group7Receiver;
-import edu.pitt.cs1699.discard.Utilities.Utilities;
 import edu.pitt.cs1699.discard.databinding.ActivityMainBinding;
 
 import static edu.pitt.cs1699.discard.Enums._PROXIMITY;
@@ -199,10 +190,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void Group8LocationTrigger(){
-        Intent intent = new Intent();
-        intent.setAction("edu.pitt.cs1699.team8.StoreArrival");
-        intent.putExtra("Longitude","LongitudeDouble");
-        intent.putExtra("Latitude","LatitudeDouble");
+        Intent intent = new Intent("edu.pitt.cs1699.team8.StoreArrival");
+        intent.putExtra("Longitude", 2.123);
+        intent.putExtra("Latitude", 1.234);
         sendBroadcast(intent);
     }
 
