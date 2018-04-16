@@ -22,6 +22,10 @@ public class Chatroom {
         this.description = description;
         this.latitude = lat;
         this.longitude = longitude;
+        this.startDate = "2017-01-01";
+        this.startTime = "01:00:00";
+        this.endDate = "2020-12-31";
+        this.endTime = "23:00:00";
     }
 
     public Chatroom(String cr_id, String name, String description, double lat, double longitude,
