@@ -1,22 +1,34 @@
 package edu.pitt.cs1699.discard.Activities;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import edu.pitt.cs1699.discard.Database.Chatroom;
 import edu.pitt.cs1699.discard.Database.ChatroomDao;
@@ -47,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private final String standEndDate   = "2020-12-31";
     private final String standStartTime = "01:00:00";
     private final String standEndTime   = "23:00:00";
+    Messenger mService = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,14 +192,45 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             protected List<Chatroom> doInBackground(Object... args) {
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                DateFormat tf = new SimpleDateFormat("HH:mm:ss", Locale.US);
                 DiscardDatabase mDb = (DiscardDatabase) args[0];
                 float lat = (float) args[1];
                 float lon = (float) args[2];
-            ChatroomDao chatDao = mDb.getChatroomDao();
+                Date sDate = (Date) args[3];
+                Date eDate = (Date) args[4];
+                Date sTime = (Date) args[5];
+                Date eTime = (Date) args[6];
+                ChatroomDao chatDao = mDb.getChatroomDao();
 
-            List<Chatroom> nearbyRooms = chatDao.byLocationAndTime(lat, lon, _PROXIMITY, standStartDate,standStartTime,standEndDate,standEndTime);
-            return nearbyRooms;
-        }
+                // get chatrooms by location
+                List<Chatroom> nearbyRooms = chatDao.getChatroomsByLocation(lat, lon, _PROXIMITY);
+
+                // Go through each element in nearbyRooms, Convert date and time, and check the
+                // date and time against the time we need
+                List<Chatroom> nearbyTimeRooms = null;
+                for (int i = 0; i < nearbyRooms.size(); i++) {
+                    try {
+                        if (df.parse( nearbyRooms.get(i).startDate).compareTo(sDate) >= 0) {
+                            if (df.parse( nearbyRooms.get(i).endDate).compareTo(eDate) <= 0) {
+                                if (tf.parse( nearbyRooms.get(i).startTime).compareTo(sTime) >= 0 ) {
+                                    if (tf.parse( nearbyRooms.get(i).endTime).compareTo(eTime) <= 0) {
+                                        // add this to the new list
+                                        nearbyTimeRooms.add(nearbyRooms.get(i));
+                                    } else { continue; }
+                                } else { continue; }
+                            } else { continue; }
+                        } else { continue; }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                //List<Chatroom> nearbyRooms = chatDao.byLocationAndTime(lat, lon, _PROXIMITY, standStartDate,standStartTime,standEndDate,standEndTime);
+
+                //return nearbyRooms;
+                return nearbyTimeRooms;
+            }
 
         @Override
         protected void onPostExecute(List<Chatroom> rooms) {
@@ -227,4 +271,44 @@ public class MainActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
+
+    // Group 8's Clear List Trigger
+    // send the value 56 via an IPC message to clear a list
+    public void Group8ClearTrigger(View v) throws RemoteException {
+        Intent intent = new Intent("edu.pitt.cs1699.team8.ClearService.class");
+        intent.setPackage("edu.pitt.cs1699.team8");
+        this.bindService(intent, clearConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private ServiceConnection clearConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            mService = new Messenger(service);
+            Message message = new Message();
+            message.what = 56;      // need Group 8's response
+            String triggerData = "";
+
+            try {
+                triggerData = new JSONObject()
+                        .put("Value", new JSONObject().put("value", "56")).toString();
+                        // need Group 8's response
+            } catch (JSONException j) {
+                j.printStackTrace();
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putString("Value", triggerData);
+
+            message.obj = bundle;
+            try {
+                mService.send(message);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            mService = null;
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            mService = null;
+        }
+    };
 }
