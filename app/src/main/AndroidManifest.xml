@@ -40,6 +40,9 @@
             <intent-filter>
                 <action android:name="edu.pitt.cs1699.discard.LOCATION"></action>
             </intent-filter>
+            <intent-filter>
+                <action android:name="edu.pitt.cs1699.discard.TIME"></action>
+            </intent-filter>
         </service>
     </application>
 

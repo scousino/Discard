@@ -43,6 +43,11 @@ public class MainActivity extends AppCompatActivity {
     private float longitude = 0;
     //private String
 
+    private final String standStartDate = "2017-01-01";
+    private final String standEndDate   = "2020-12-31";
+    private final String standStartTime = "01:00:00";
+    private final String standEndTime   = "23:00:00";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,10 +89,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         getRooms(latitiude, longitude);
-        
-        //TODO
-        //TIME TRIGGER
-
     }
 
     static public void keepChatroom(Chatroom room, Context context) {
@@ -166,19 +167,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void getRooms(float latitude, float longitude){
-        new getRooms().execute(mDb, latitude, longitude);
-    }
+        private void getRooms(float latitude, float longitude){
+            new getRooms().execute(mDb, latitude, longitude);
+        }
 
-    private class getRooms extends AsyncTask<Object, Void, List<Chatroom>> {
+        private class getRooms extends AsyncTask<Object, Void, List<Chatroom>> {
 
-        @Override
-        protected List<Chatroom> doInBackground(Object... args) {
-            DiscardDatabase mDb = (DiscardDatabase) args[0];
-            float lat = (float) args[1];
-            float lon = (float) args[2];
+            @Override
+            protected List<Chatroom> doInBackground(Object... args) {
+                DiscardDatabase mDb = (DiscardDatabase) args[0];
+                float lat = (float) args[1];
+                float lon = (float) args[2];
             ChatroomDao chatDao = mDb.getChatroomDao();
-            List<Chatroom> nearbyRooms = chatDao.getChatroomsByLocation(lat, lon, _PROXIMITY);
+
+            //List<Chatroom> nearbyRooms = chatDao.getChatroomsByLocation(lat, lon, _PROXIMITY);
+            List<Chatroom> nearbyRooms = chatDao.byLocationAndTime(lat, lon, _PROXIMITY, standStartDate,standStartTime,standEndDate,standEndTime);
             return nearbyRooms;
         }
 
