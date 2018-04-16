@@ -157,13 +157,17 @@ public class MainActivity extends AppCompatActivity {
         ChatroomDao roomDao = mDb.getChatroomDao();
         new deleteRoom().execute(mDb, room);
 
-        //TODO
-        //SOME TRIGGER GOES HERE
 
+        // Group 8 Location Trigger
+        Intent intent = new Intent("edu.pitt.cs1699.team8.StoreArrival");
+        intent.putExtra("Longitude", 2.123);
+        intent.putExtra("Latitude", 1.234);
+        mContext.sendBroadcast(intent);
 
-        Intent intent = new Intent(mContext, MainActivity.class);
+        // Reset Chatrooms to not display deleted one
+        Intent intent2 = new Intent(mContext, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        mContext.startActivity(intent);
+        mContext.startActivity(intent2);
     }
 
 
@@ -180,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
                 float lon = (float) args[2];
             ChatroomDao chatDao = mDb.getChatroomDao();
 
-            //List<Chatroom> nearbyRooms = chatDao.getChatroomsByLocation(lat, lon, _PROXIMITY);
             List<Chatroom> nearbyRooms = chatDao.byLocationAndTime(lat, lon, _PROXIMITY, standStartDate,standStartTime,standEndDate,standEndTime);
             return nearbyRooms;
         }
@@ -214,26 +217,6 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void v) {
 
         }
-    }
-
-
-    private Boolean firstTime = null;
-    /**
-     * Checks if the user is opening the app for the first time.
-     * Note that this method should be placed inside an activity and it can be called multiple times.
-     * @return boolean
-     */
-    private boolean isFirstTime() {
-        if (firstTime == null) {
-            SharedPreferences mPreferences = this.getSharedPreferences("first_time", Context.MODE_PRIVATE);
-            firstTime = mPreferences.getBoolean("firstTime", true);
-            if (firstTime) {
-                SharedPreferences.Editor editor = mPreferences.edit();
-                editor.putBoolean("firstTime", false);
-                editor.commit();
-            }
-        }
-        return firstTime;
     }
 
     @Override
