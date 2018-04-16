@@ -116,6 +116,8 @@ public class ChatroomActivity extends AppCompatActivity {
         Intent group8 = new Intent("edu.pitt.cs1699.team8.SINGLE");
         Random rand = new Random();
 
+        Bundle dataBundle = new Bundle();
+
         //Create random data to send to Group 8
         try {
             JSONObject itemData = new JSONObject();
@@ -123,13 +125,15 @@ public class ChatroomActivity extends AppCompatActivity {
             itemData.put("Price", rand.nextInt(500));
             itemData.put("Quantity", rand.nextInt(5));
 
+            dataBundle.putString("singleItemData", itemData.toString());
+            group8.putExtra("singleItemData", dataBundle);
             //Send intent to Group 8's activity
             mContext.startActivity(group8);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        Toast.makeText(context, "Keep Message", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Message Kept", Toast.LENGTH_SHORT).show();
     }
 
     static public void discardMessage(Message message, Context context) {
