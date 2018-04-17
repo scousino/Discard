@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,8 +27,12 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 
 import edu.pitt.cs1699.discard.Database.Chatroom;
@@ -53,13 +58,10 @@ public class MainActivity extends AppCompatActivity {
 
     private float latitiude = 0;
     private float longitude = 0;
-    //private String
 
-    private final String standStartDate = "2017-01-01";
-    private final String standEndDate   = "2020-12-31";
-    private final String standStartTime = "01:00:00";
-    private final String standEndTime   = "23:00:00";
-    Messenger mService = null;
+    private String currDate;
+    private String currTime;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,24 @@ public class MainActivity extends AppCompatActivity {
             if(intent.hasExtra("long")){
                 String strLong = intent.getStringExtra("long");
                 longitude = Float.valueOf(strLong);
+            }
+        }
+
+        if(intent.hasExtra("date")) {
+            String dateJsonString = intent.getStringExtra("date");
+            try {
+                this.currDate = new JSONObject(dateJsonString).getString("Current Date");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(intent.hasExtra("time")) {
+            String  timeJsonString =  intent.getStringExtra("time");
+            try {
+                this.currTime = new JSONObject(timeJsonString).getString("Current Tiime");
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
 
@@ -178,67 +198,65 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-        private void getRooms(float latitude, float longitude){
-            new getRooms().execute(mDb, latitude, longitude);
-        }
+    private void getRooms(float latitude, float longitude){
+        new getRooms().execute(mDb, latitude, longitude, this.currDate, this.currTime);
+    }
 
-        private class getRooms extends AsyncTask<Object, Void, List<Chatroom>> {
+    private class getRooms extends AsyncTask<Object, Void, List<Chatroom>> {
 
-            @Override
-            protected List<Chatroom> doInBackground(Object... args) {
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                DateFormat tf = new SimpleDateFormat("HH:mm:ss", Locale.US);
-                DiscardDatabase mDb = (DiscardDatabase) args[0];
-                float lat = (float) args[1];
-                float lon = (float) args[2];
-                Date sDate = (Date) args[3];
-                Date eDate = (Date) args[4];
-                Date sTime = (Date) args[5];
-                Date eTime = (Date) args[6];
-                ChatroomDao chatDao = mDb.getChatroomDao();
+        @Override
+        protected List<Chatroom> doInBackground(Object... args) {
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            DateFormat tf = new SimpleDateFormat("HH:mm:ss", Locale.US);
+            DiscardDatabase mDb = (DiscardDatabase) args[0];
+            float lat = (float) args[1];
+            float lon = (float) args[2];
+            String compDate = (String) args[3];
+            String compTime = (String) args[4];
 
-                // get chatrooms by location
-                List<Chatroom> nearbyRooms = chatDao.getChatroomsByLocation(lat, lon, _PROXIMITY);
+
+
+            ChatroomDao chatDao = mDb.getChatroomDao();
+
+            // get chatrooms by location
+            List<Chatroom> nearbyRooms = chatDao.getChatroomsByLocation(lat, lon, _PROXIMITY);
+            List<Chatroom> nearbyTimeRooms = new ArrayList<>();
+
+            try {
+                Date compDateObject = df.parse(compDate);
+                Date compTimeObject = tf.parse(compTime);
 
                 // Go through each element in nearbyRooms, Convert date and time, and check the
                 // date and time against the time we need
-                List<Chatroom> nearbyTimeRooms = null;
+
                 for (int i = 0; i < nearbyRooms.size(); i++) {
                     try {
-                        if (df.parse( nearbyRooms.get(i).startDate).compareTo(sDate) >= 0) {
-                            if (df.parse( nearbyRooms.get(i).endDate).compareTo(eDate) <= 0) {
-                                if (tf.parse( nearbyRooms.get(i).startTime).compareTo(sTime) >= 0 ) {
-                                    if (tf.parse( nearbyRooms.get(i).endTime).compareTo(eTime) <= 0) {
-                                        // add this to the new list
-                                        nearbyTimeRooms.add(nearbyRooms.get(i));
-                                    } else { continue; }
-                                } else { continue; }
-                            } else { continue; }
-                        } else { continue; }
+                        boolean inDateRange = (compDateObject.compareTo(df.parse(nearbyRooms.get(i).endDate)) <= 0)
+                                && (compDateObject.compareTo(df.parse(nearbyRooms.get(i).startDate)) >= 0);
+                        boolean inTimeRange = (compTimeObject.compareTo(df.parse(nearbyRooms.get(i).endTime)) <= 0)
+                                && (compTimeObject.compareTo(df.parse(nearbyRooms.get(i).startTime)) >= 0);
+
+                        if(inDateRange && inTimeRange)
+                            nearbyTimeRooms.add(nearbyRooms.get(i));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                 }
-
-                //List<Chatroom> nearbyRooms = chatDao.byLocationAndTime(lat, lon, _PROXIMITY, standStartDate,standStartTime,standEndDate,standEndTime);
-
-                //return nearbyRooms;
-                return nearbyTimeRooms;
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
 
-        @Override
-        protected void onPostExecute(List<Chatroom> rooms) {
-            mAdapter = new ChatroomAdapter(rooms, mContext);
-            mBinding.recyclerView.setAdapter(mAdapter);
-        }
-    }
 
-    public void Group8LocationTrigger(){
-        Intent intent = new Intent("edu.pitt.cs1699.team8.StoreArrival");
-        intent.putExtra("Longitude", 2.123);
-        intent.putExtra("Latitude", 1.234);
-        sendBroadcast(intent);
+            //return nearbyRooms;
+            return nearbyTimeRooms;
+        }
+
+    @Override
+    protected void onPostExecute(List<Chatroom> rooms) {
+        mAdapter = new ChatroomAdapter(rooms, mContext);
+        mBinding.recyclerView.setAdapter(mAdapter);
     }
+}
 
     private static class deleteRoom extends AsyncTask<Object, Void, Void> {
 
@@ -266,43 +284,5 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Group 8's Clear List Trigger
-    // send the value 56 via an IPC message to clear a list
-    public void Group8ClearTrigger(View v) throws RemoteException {
-        Intent intent = new Intent("edu.pitt.cs1699.team8.ClearService.class");
-        intent.setPackage("edu.pitt.cs1699.team8");
-        this.bindService(intent, clearConnection, Context.BIND_AUTO_CREATE);
-    }
 
-    private ServiceConnection clearConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            mService = new Messenger(service);
-            Message message = new Message();
-            message.what = 56;      // need Group 8's response
-            String triggerData = "";
-
-            try {
-                triggerData = new JSONObject()
-                        .put("Value", new JSONObject().put("value", "56")).toString();
-                        // need Group 8's response
-            } catch (JSONException j) {
-                j.printStackTrace();
-            }
-
-            Bundle bundle = new Bundle();
-            bundle.putString("Value", triggerData);
-
-            message.obj = bundle;
-            try {
-                mService.send(message);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            mService = null;
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            mService = null;
-        }
-    };
 }

@@ -1,12 +1,17 @@
 package edu.pitt.cs1699.discard.Activities;
 
 import android.arch.lifecycle.Observer;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import android.os.IBinder;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -55,6 +60,8 @@ public class ChatroomActivity extends AppCompatActivity {
     static private String chatroomID = "";
     static private String chatroomName = "";
     private List<Message> chatroomMessages = new ArrayList<>();
+
+    private static Messenger mService = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,19 +145,14 @@ public class ChatroomActivity extends AppCompatActivity {
 
     static public void discardMessage(Message message, Context context) {
         //Delete local message
-        MessageDao messageDao = mDb.getMessageDao();
         new deleteMessage().execute(mDb, message);
+
+
         //Initiate next group's stuff
+        Intent intent = new Intent("edu.pitt.cs1699.team8.ClearService.class");
+        intent.setPackage("edu.pitt.cs1699.team8");
+        mContext.bindService(intent, clearConnection, Context.BIND_AUTO_CREATE);
 
-
-
-        //  Refreshes the page
-        //  Note - ChatroomActivity is set as noHistory in the manifest so that when this new activity is launched, it destroys the previous one.
-        //         This updates the view without the deleted message, and avoids the message appearing on back button press
-        Intent intent = new Intent(mContext, ChatroomActivity.class);
-        intent.putExtra(CHATROOM_ID, chatroomID);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        mContext.startActivity(intent);
     }
 
     private static class deleteMessage extends AsyncTask<Object, Void, Void> {
@@ -169,6 +171,46 @@ public class ChatroomActivity extends AppCompatActivity {
 
         }
     }
+
+    // Group 8's Clear List Trigger
+    // send the value 56 via an IPC message to clear a list
+    public void Group8ClearTrigger(View v) throws RemoteException {
+        Intent intent = new Intent("edu.pitt.cs1699.team8.ClearService.class");
+        intent.setPackage("edu.pitt.cs1699.team8");
+        this.bindService(intent, clearConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private static ServiceConnection clearConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            mService = new Messenger(service);
+            android.os.Message message = new android.os.Message();
+            message.what = 56;      // need Group 8's response
+            String triggerData = "";
+
+            try {
+                triggerData = new JSONObject()
+                        .put("Value", new JSONObject().put("value", "56")).toString();
+                // need Group 8's response
+            } catch (JSONException j) {
+                j.printStackTrace();
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putString("Value", triggerData);
+
+            message.obj = bundle;
+            try {
+                mService.send(message);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            mService = null;
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            mService = null;
+        }
+    };
 
     @Override
     public void onBackPressed() {
