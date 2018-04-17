@@ -175,11 +175,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("Longitude", 2.123);
         intent.putExtra("Latitude", 1.234);
         mContext.sendBroadcast(intent);
-
-        // Reset Chatrooms to not display deleted one
-        Intent intent2 = new Intent(mContext, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        mContext.startActivity(intent2);
     }
 
 
