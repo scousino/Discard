@@ -119,23 +119,22 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("Yes!", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent();
-                intent.setAction("edu.pitt.cs1699.team8.MULTI");
+                Intent intent = new Intent("edu.pitt.cs1699.team8.MULTI");
                 String triggerData = "";
                 try {
                     JSONObject item1 = new JSONObject()
                             .put("Name", "Chicken Wings")
-                            .put("Price", "5")
+                            .put("Price", "500")
                             .put("Quantity", "12");
 
                     JSONObject item2 = new JSONObject()
                             .put("Name", "Hot Pepper Sauce")
-                            .put("Price", "3")
+                            .put("Price", "300")
                             .put("Quantity", "10");
 
                     JSONObject item3 = new JSONObject()
                             .put("Name", "Butter")
-                            .put("Price", "2")
+                            .put("Price", "200")
                             .put("Quantity", "10");
 
                     JSONArray items = new JSONArray();
