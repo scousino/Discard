@@ -14,6 +14,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         if(intent.hasExtra("time")) {
             String  timeJsonString =  intent.getStringExtra("time");
             try {
-                this.currTime = new JSONObject(timeJsonString).getString("Current Tiime");
+                this.currTime = new JSONObject(timeJsonString).getString("Current Time");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -199,6 +200,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void getRooms(float latitude, float longitude){
+        if(this.currDate == null || this.currTime == null){
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            Date date = new Date();
+            this.currDate = dateFormat.format(date);
+
+            DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+            this.currTime = timeFormat.format(date);
+        }
+
         new getRooms().execute(mDb, latitude, longitude, this.currDate, this.currTime);
     }
 
@@ -233,8 +243,8 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         boolean inDateRange = (compDateObject.compareTo(df.parse(nearbyRooms.get(i).endDate)) <= 0)
                                 && (compDateObject.compareTo(df.parse(nearbyRooms.get(i).startDate)) >= 0);
-                        boolean inTimeRange = (compTimeObject.compareTo(df.parse(nearbyRooms.get(i).endTime)) <= 0)
-                                && (compTimeObject.compareTo(df.parse(nearbyRooms.get(i).startTime)) >= 0);
+                        boolean inTimeRange = (compTimeObject.compareTo(tf.parse(nearbyRooms.get(i).endTime)) <= 0)
+                                && (compTimeObject.compareTo(tf.parse(nearbyRooms.get(i).startTime)) >= 0);
 
                         if(inDateRange && inTimeRange)
                             nearbyTimeRooms.add(nearbyRooms.get(i));

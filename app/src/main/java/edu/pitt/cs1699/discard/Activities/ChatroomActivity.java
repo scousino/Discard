@@ -83,7 +83,6 @@ public class ChatroomActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //TODO: TEST
         mDb.getChatroomDao().getChatroomById(chatroomID).observe(this, new Observer<Chatroom>() {
             @Override
             public void onChanged(@Nullable Chatroom chatroom) {
@@ -170,14 +169,6 @@ public class ChatroomActivity extends AppCompatActivity {
         protected void onPostExecute(Void v) {
 
         }
-    }
-
-    // Group 8's Clear List Trigger
-    // send the value 56 via an IPC message to clear a list
-    public void Group8ClearTrigger(View v) throws RemoteException {
-        Intent intent = new Intent("edu.pitt.cs1699.team8.ClearService.class");
-        intent.setPackage("edu.pitt.cs1699.team8");
-        this.bindService(intent, clearConnection, Context.BIND_AUTO_CREATE);
     }
 
     private static ServiceConnection clearConnection = new ServiceConnection() {
